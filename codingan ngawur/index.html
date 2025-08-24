@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICETRONAUT Apparel — Premium Store</title>
+    <meta
+      name="description"
+      content="Toko baju premium dengan filter, pencarian, keranjang, kupon, ongkir, dan checkout WhatsApp."
+    />
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Inter", "ui-sans-serif", "system-ui"],
+              body: ["Inter", "ui-sans-serif", "system-ui"],
+            },
+            boxShadow: {
+              soft: "0 10px 25px -10px rgba(0,0,0,0.2)",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-800 font-body"
+  >
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-white/70 shadow-soft">
+      <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-9 h-9 rounded-2xl bg-slate-900 grid place-content-center text-white font-bold"
+          >
+            IA
+          </div>
+          <div>
+            <h1 class="text-lg font-bold leading-tight">ICETRONAUT Apparel</h1>
+            <p class="text-xs text-slate-500 -mt-1">Look cool, stay comfy</p>
+          </div>
+        </div>
+
+        <div class="hidden md:flex flex-1 items-center gap-3 ml-6">
+          <div class="relative flex-1">
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Cari: hoodie, kemeja, warna, ukuran..."
+              class="w-full rounded-xl border border-slate-200 bg-white/80 px-4 py-2 pl-10 outline-none focus:ring-2 focus:ring-slate-300"
+            />
+            <svg
+              class="w-5 h-5 absolute left-3 top-2.5 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </div>
+          <div>
+            <select
+              id="sortSelect"
+              class="rounded-xl border border-slate-200 bg-white/80 px-3 py-2 focus:ring-2 focus:ring-slate-300"
+            >
+              <option value="popular">Paling Populer</option>
+              <option value="new">Terbaru</option>
+              <option value="priceAsc">Harga: Murah → Mahal</option>
+              <option value="priceDesc">Harga: Mahal → Murah</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ml-auto flex items-center gap-2">
+          <button
+            id="filterToggle"
+            class="md:hidden rounded-xl border border-slate-200 px-3 py-2"
+          >
+            Filter
+          </button>
+          <button
+            id="cartButton"
+            class="relative rounded-xl bg-slate-900 text-white px-4 py-2 hover:bg-slate-800 active:scale-95 transition"
+          >
+            Keranjang
+            <span
+              id="cartCount"
+              class="ml-2 inline-flex items-center justify-center text-xs bg-white text-slate-900 w-6 h-6 rounded-full"
+              >0</span
+            >
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="max-w-7xl mx-auto px-4 lg:px-8 mt-8">
+      <div
+        class="overflow-hidden rounded-3xl bg-[url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center shadow-soft"
+      >
+        <div
+          class="bg-gradient-to-r from-black/70 to-black/10 p-10 md:p-16 lg:p-24 text-white"
+        >
+          <h2 class="text-3xl md:text-5xl font-extrabold mb-3">
+            Drop Koleksi Musim Ini
+          </h2>
+          <p class="max-w-2xl text-white/90 mb-6">
+            Basic premium, warna netral, dan cutting nyaman. Diskon pembukaan
+            toko: pakai kupon <span class="font-bold">HEMAT 30%</span>.
+          </p>
+          <button
+            class="rounded-2xl bg-white text-slate-900 px-5 py-3 font-semibold hover:opacity-90 active:scale-95"
+            onclick="scrollToProducts()"
+          >
+            Belanja Sekarang
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <main
+      class="max-w-7xl mx-auto px-4 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-6 mt-10 mb-24"
+    >
+      <!-- Sidebar Filters -->
+      <aside
+        id="filters"
+        class="md:col-span-3 space-y-4 md:sticky md:top-20 h-max hidden md:block"
+      >
+        <div class="p-4 rounded-2xl bg-white shadow-soft">
+          <h3 class="font-bold text-lg mb-2">Kategori</h3>
+          <div class="space-y-2" id="categoryFilters"></div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white shadow-soft">
+          <h3 class="font-bold text-lg mb-3">Ukuran</h3>
+          <div class="flex flex-wrap gap-2" id="sizeFilters"></div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white shadow-soft">
+          <h3 class="font-bold text-lg mb-3">Warna</h3>
+          <div class="flex flex-wrap gap-2" id="colorFilters"></div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white shadow-soft">
+          <h3 class="font-bold text-lg mb-3">Harga</h3>
+          <input
+            id="priceRange"
+            type="range"
+            min="50000"
+            max="750000"
+            value="750000"
+            class="w-full accent-slate-900"
+          />
+          <div class="flex justify-between text-sm text-slate-500 mt-1">
+            <span>Min: <strong id="priceMinText"></strong></span>
+            <span>Max: <strong id="priceMaxText"></strong></span>
+          </div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white shadow-soft">
+          <button id="resetFilters" class="w-full rounded-xl border px-4 py-2">
+            Reset Filter
+          </button>
+        </div>
+      </aside>
+
+      <!-- Products -->
+      <section class="md:col-span-9">
+        <div class="flex items-center justify-between mb-4 md:hidden">
+          <div class="relative flex-1 mr-2">
+            <input
+              id="searchInputMobile"
+              type="text"
+              placeholder="Cari produk..."
+              class="w-full rounded-xl border border-slate-200 bg-white/80 px-4 py-2 pl-10 outline-none focus:ring-2 focus:ring-slate-300"
+            />
+            <svg
+              class="w-5 h-5 absolute left-3 top-2.5 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </div>
+          <select
+            id="sortSelectMobile"
+            class="rounded-xl border border-slate-200 bg-white/80 px-3 py-2"
+          >
+            <option value="popular">Populer</option>
+            <option value="new">Terbaru</option>
+            <option value="priceAsc">Murah → Mahal</option>
+            <option value="priceDesc">Mahal → Murah</option>
+          </select>
+        </div>
+
+        <div
+          id="productGrid"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        ></div>
+      </section>
+    </main>
+
+    <!-- Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+      <div
+        class="absolute inset-0 bg-black/40"
+        onclick="toggleCart(false)"
+      ></div>
+      <div
+        class="absolute right-0 top-0 h-full w-full sm:w-[420px] bg-white shadow-xl p-5 flex flex-col"
+      >
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold">Keranjang</h3>
+          <button
+            class="rounded-full p-2 hover:bg-slate-100"
+            onclick="toggleCart(false)"
+          >
+            ✕
+          </button>
+        </div>
+        <div id="cartItems" class="divide-y my-4 overflow-y-auto grow"></div>
+
+        <div class="space-y-2 text-sm text-slate-600">
+          <div class="flex justify-between">
+            <span>Subtotal</span><span id="subtotalText">Rp 0</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Diskon</span><span id="discountText">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Ongkir</span><span id="shippingText">-</span>
+          </div>
+          <div
+            class="flex justify-between font-semibold text-slate-900 text-base"
+          >
+            <span>Total</span><span id="totalText">Rp 0</span>
+          </div>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          <div class="flex gap-2">
+            <input
+              id="couponInput"
+              class="flex-1 rounded-xl border px-3 py-2"
+              placeholder="Kupon: HEMAT10 / GRATISONGKIR"
+            />
+            <button class="rounded-xl border px-3 py-2" onclick="applyCoupon()">
+              Pakai
+            </button>
+          </div>
+          <div>
+            <label class="text-sm">Kurir</label>
+            <select
+              id="shippingSelect"
+              class="w-full rounded-xl border px-3 py-2"
+              onchange="recalc()"
+            >
+              <option value="REG">REG - Est. 3-5 hari</option>
+              <option value="YES">YES - Est. 1-2 hari</option>
+            </select>
+          </div>
+          <button
+            class="w-full rounded-2xl bg-slate-900 text-white px-5 py-3 font-semibold hover:bg-slate-800"
+            onclick="openCheckout()"
+          >
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Quick View Modal -->
+    <div id="quickView" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+      <div
+        class="absolute inset-0 bg-black/50"
+        onclick="toggleQuickView(false)"
+      ></div>
+      <div
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-4xl bg-white rounded-3xl shadow-soft grid grid-cols-1 md:grid-cols-2 overflow-hidden"
+      >
+        <div id="qvImage" class="aspect-[4/5] bg-slate-100"></div>
+        <div class="p-6 md:p-8 space-y-4">
+          <h3 id="qvName" class="text-2xl font-bold"></h3>
+          <p id="qvPrice" class="text-lg font-semibold"></p>
+          <p id="qvDesc" class="text-sm text-slate-600"></p>
+          <div>
+            <p class="text-sm font-semibold mb-1">Ukuran</p>
+            <div id="qvSizes" class="flex flex-wrap gap-2"></div>
+          </div>
+          <div>
+            <p class="text-sm font-semibold mb-1">Warna</p>
+            <div id="qvColors" class="flex flex-wrap gap-2"></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="qvMinus" class="rounded-xl border px-3 py-2">-</button>
+            <span id="qvQty" class="w-8 text-center">1</span>
+            <button id="qvPlus" class="rounded-xl border px-3 py-2">+</button>
+          </div>
+          <div class="flex gap-2">
+            <button
+              class="rounded-2xl bg-slate-900 text-white px-5 py-3 font-semibold hover:bg-slate-800"
+              id="qvAdd"
+            >
+              Tambah ke Keranjang
+            </button>
+            <button
+              class="rounded-2xl border px-5 py-3"
+              onclick="toggleQuickView(false)"
+            >
+              Batal
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/50"
+        onclick="toggleCheckout(false)"
+      ></div>
+      <div
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-3xl bg-white rounded-3xl shadow-soft p-6 md:p-8"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold">Checkout</h3>
+          <button
+            class="rounded-full p-2 hover:bg-slate-100"
+            onclick="toggleCheckout(false)"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form id="checkoutForm" class="space-y-3">
+            <input
+              required
+              id="coName"
+              class="w-full rounded-xl border px-3 py-2"
+              placeholder="Nama Penerima"
+            />
+            <input
+              required
+              id="coPhone"
+              class="w-full rounded-xl border px-3 py-2"
+              placeholder="No. HP / WhatsApp"
+            />
+            <textarea
+              required
+              id="coAddress"
+              class="w-full rounded-xl border px-3 py-2"
+              placeholder="Alamat Lengkap"
+            ></textarea>
+            <select id="coPayment" class="w-full rounded-xl border px-3 py-2">
+              <option>Metode Pembayaran: Transfer</option>
+              <option>Metode Pembayaran: COD</option>
+            </select>
+            <button
+              class="w-full rounded-2xl bg-slate-900 text-white px-5 py-3 font-semibold hover:bg-slate-800"
+            >
+              Buat Pesanan (WhatsApp)
+            </button>
+            <p class="text-xs text-slate-500">
+              *Tombol ini akan membuka WhatsApp dengan rincian pesanan Anda.
+            </p>
+          </form>
+          <div class="space-y-2 bg-slate-50 rounded-2xl p-4">
+            <h4 class="font-semibold">Ringkasan</h4>
+            <div class="flex justify-between text-sm">
+              <span>Subtotal</span><span id="coSubtotal">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>Diskon</span><span id="coDiscount">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>Ongkir</span><span id="coShipping">-</span>
+            </div>
+            <div class="flex justify-between font-bold">
+              <span>Total</span><span id="coTotal">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="border-t py-10 text-center text-sm text-slate-500">
+      © <span id="year"></span> ICETRONAUT Apparel. Dibuat dengan ❤️.
+    </footer>
+
+    <script>
+      /*** Data ***/
+      const CATEGORIES = ["T-Shirt", "Kemeja", "Hoodie", "Dress", "Celana"];
+      const SIZES = ["S", "M", "L", "XL"];
+      const COLORS = ["Hitam", "Putih", "Abu", "Biru", "Cream"];
+
+      // Contoh produk (ganti sesuai katalog lo)
+      const products = [
+        {
+          id: "tee-basic-black",
+          name: "T-Shirt Basic",
+          price: 120000,
+          category: "T-Shirt",
+          colors: ["Hitam", "Putih"],
+          sizes: ["S", "M", "L", "XL"],
+          rating: 4.7,
+          createdAt: "2025-08-01",
+          image: seedImg("tee-black"),
+          desc: "Kaos katun combed 24s, adem dan nyaman harian.",
+        },
+        {
+          id: "shirt-oxford-blue",
+          name: "Kemeja Oxford",
+          price: 199000,
+          category: "Kemeja",
+          colors: ["Biru", "Putih"],
+          sizes: ["M", "L", "XL"],
+          rating: 4.5,
+          createdAt: "2025-07-20",
+          image: seedImg("oxford-blue"),
+          desc: "Kemeja bahan oxford, semi formal santai.",
+        },
+        {
+          id: "hoodie-fleece-ash",
+          name: "Hoodie Fleece",
+          price: 259000,
+          category: "Hoodie",
+          colors: ["Abu", "Hitam"],
+          sizes: ["M", "L", "XL"],
+          rating: 4.8,
+          createdAt: "2025-08-12",
+          image: seedImg("hoodie-ash"),
+          desc: "Fleece tebal lembut, cocok malam dingin.",
+        },
+        {
+          id: "dress-linen-cream",
+          name: "Dress Linen",
+          price: 329000,
+          category: "Dress",
+          colors: ["Cream"],
+          sizes: ["S", "M", "L"],
+          rating: 4.6,
+          createdAt: "2025-06-28",
+          image: seedImg("dress-cream"),
+          desc: "Dress linen breathable, jatuh elegan.",
+        },
+        {
+          id: "pants-chino-sand",
+          name: "Celana Chino",
+          price: 229000,
+          category: "Celana",
+          colors: ["Cream", "Hitam"],
+          sizes: ["M", "L", "XL"],
+          rating: 4.4,
+          createdAt: "2025-08-15",
+          image: seedImg("chino-sand"),
+          desc: "Chino slim-fit bahan stretch, nyaman.",
+        },
+        {
+          id: "tee-oversize-white",
+          name: "T-Shirt Oversize",
+          price: 135000,
+          category: "T-Shirt",
+          colors: ["Putih", "Abu"],
+          sizes: ["M", "L", "XL"],
+          rating: 4.3,
+          createdAt: "2025-08-18",
+          image: seedImg("tee-oversize"),
+          desc: "Oversize cutting street style kekinian.",
+        },
+        {
+          id: "hoodie-zip-black",
+          name: "Hoodie Zip",
+          price: 279000,
+          category: "Hoodie",
+          colors: ["Hitam"],
+          sizes: ["S", "M", "L", "XL"],
+          rating: 4.9,
+          createdAt: "2025-08-10",
+          image: seedImg("hoodie-zip"),
+          desc: "Hoodie resleting serbaguna, minimal look.",
+        },
+        {
+          id: "shirt-flannel-grey",
+          name: "Kemeja Flannel",
+          price: 215000,
+          category: "Kemeja",
+          colors: ["Abu"],
+          sizes: ["M", "L", "XL"],
+          rating: 4.5,
+          createdAt: "2025-07-31",
+          image: seedImg("flannel-grey"),
+          desc: "Flannel hangat motif kotak, cozy vibes.",
+        },
+        {
+          id: "pants-cargo-black",
+          name: "Celana Cargo",
+          price: 249000,
+          category: "Celana",
+          colors: ["Hitam"],
+          sizes: ["M", "L", "XL"],
+          rating: 4.6,
+          createdAt: "2025-08-05",
+          image: seedImg("cargo-black"),
+          desc: "Cargo banyak kantong, utilitarian style.",
+        },
+      ];
+
+      function seedImg(seed) {
+        return `https://picsum.photos/seed/${encodeURIComponent(
+          seed
+        )}/800/1000`;
+      }
+
+      /*** State ***/
+      const state = {
+        search: "",
+        sort: "popular",
+        categories: new Set(),
+        sizes: new Set(),
+        colors: new Set(),
+        priceMax: 750000,
+        cart: loadCart(),
+        coupon: null,
+        shipping: "REG",
+      };
+
+      /*** Utils ***/
+      const fIDR = (n) =>
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          maximumFractionDigits: 0,
+        }).format(n);
+      const byId = (id) => document.getElementById(id);
+
+      function saveCart() {
+        localStorage.setItem(
+          "cart_v1",
+          JSON.stringify({ items: state.cart, coupon: state.coupon })
+        );
+      }
+      function loadCart() {
+        try {
+          return JSON.parse(localStorage.getItem("cart_v1"))?.items || [];
+        } catch {
+          return [];
+        }
+      }
+
+      /*** Render Filters ***/
+      function renderFilters() {
+        const catWrap = byId("categoryFilters");
+        const sizeWrap = byId("sizeFilters");
+        const colorWrap = byId("colorFilters");
+        catWrap.innerHTML = CATEGORIES.map((c) =>
+          checkboxTpl(c, "category")
+        ).join("");
+        sizeWrap.innerHTML = SIZES.map((s) => chipTpl(s, "size")).join("");
+        colorWrap.innerHTML = COLORS.map((c) => chipTpl(c, "color")).join("");
+      }
+
+      function checkboxTpl(label, type) {
+        const id = `${type}-${label}`;
+        return `<label class="flex items-center gap-2 text-sm"><input type="checkbox" id="${id}" data-type="${type}" data-value="${label}" class="rounded"> ${label}</label>`;
+      }
+      function chipTpl(label, type) {
+        const id = `${type}-${label}`;
+        return `<button id="${id}" data-type="${type}" data-value="${label}" class="px-3 py-1 rounded-xl border text-sm hover:bg-slate-50">${label}</button>`;
+      }
+
+      /*** Product Grid ***/
+      function renderProducts() {
+        const grid = byId("productGrid");
+        let list = products.slice();
+
+        // Search
+        const q = state.search.toLowerCase();
+        if (q)
+          list = list.filter((p) =>
+            [p.name, p.category, ...p.colors, ...p.sizes]
+              .join(" ")
+              .toLowerCase()
+              .includes(q)
+          );
+
+        // Filters
+        if (state.categories.size)
+          list = list.filter((p) => state.categories.has(p.category));
+        if (state.sizes.size)
+          list = list.filter((p) => p.sizes.some((s) => state.sizes.has(s)));
+        if (state.colors.size)
+          list = list.filter((p) => p.colors.some((c) => state.colors.has(c)));
+        list = list.filter((p) => p.price <= state.priceMax);
+
+        // Sort
+        if (state.sort === "priceAsc") list.sort((a, b) => a.price - b.price);
+        if (state.sort === "priceDesc") list.sort((a, b) => b.price - a.price);
+        if (state.sort === "new")
+          list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        if (state.sort === "popular") list.sort((a, b) => b.rating - a.rating);
+
+        grid.innerHTML = list.map(cardTpl).join("") || emptyTpl();
+
+        // Bind quick-view buttons
+        document.querySelectorAll("[data-qv]").forEach((btn) => {
+          btn.addEventListener("click", () => openQuickView(btn.dataset.id));
+        });
+      }
+
+      function cardTpl(p) {
+        return `
+        <div class="group rounded-3xl bg-white shadow-soft overflow-hidden hover:-translate-y-0.5 transition">
+          <div class="relative aspect-[4/5] overflow-hidden">
+            <img src="${p.image}" alt="${
+          p.name
+        }" class="w-full h-full object-cover group-hover:scale-[1.02] transition"/>
+            <div class="absolute left-3 top-3 text-xs bg-white/85 rounded-full px-2 py-1">${
+              p.category
+            }</div>
+            <div class="absolute right-3 top-3 text-xs bg-black/80 text-white rounded-full px-2 py-1">★ ${
+              p.rating
+            }</div>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">${p.name}</h4>
+            <p class="text-slate-500 text-sm">${p.colors.join(", ")}</p>
+            <div class="flex items-center justify-between mt-2">
+              <span class="font-bold">${fIDR(p.price)}</span>
+              <div class="flex gap-2">
+                <button data-id="${
+                  p.id
+                }" data-qv class="rounded-xl border px-3 py-1 text-sm">Lihat</button>
+                <button class="rounded-xl bg-slate-900 text-white px-3 py-1 text-sm" onclick="addToCart('${
+                  p.id
+                }')">Tambah</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      function emptyTpl() {
+        return `<div class="col-span-full text-center text-slate-500 py-16">Produk tidak ditemukan. Coba reset filter atau kata kunci lain.</div>`;
+      }
+
+      /*** Quick View ***/
+      let qv = { id: null, size: null, color: null, qty: 1 };
+      function openQuickView(id) {
+        const p = products.find((x) => x.id === id);
+        if (!p) return;
+        qv = { id, size: p.sizes[0], color: p.colors[0], qty: 1 };
+        byId(
+          "qvImage"
+        ).innerHTML = `<img src="${p.image}" class="w-full h-full object-cover"/>`;
+        byId("qvName").textContent = p.name;
+        byId("qvPrice").textContent = fIDR(p.price);
+        byId("qvDesc").textContent = p.desc;
+        byId("qvQty").textContent = "1";
+        byId("qvSizes").innerHTML = p.sizes
+          .map(
+            (s) =>
+              `<button class="px-3 py-1 rounded-xl border text-sm ${
+                s === qv.size ? "bg-slate-900 text-white" : ""
+              }" onclick="qv.size='${s}'; openQuickView('${id}')">${s}</button>`
+          )
+          .join("");
+        byId("qvColors").innerHTML = p.colors
+          .map(
+            (c) =>
+              `<button class="px-3 py-1 rounded-xl border text-sm ${
+                c === qv.color ? "bg-slate-900 text-white" : ""
+              }" onclick="qv.color='${c}'; openQuickView('${id}')">${c}</button>`
+          )
+          .join("");
+        byId("qvPlus").onclick = () => {
+          qv.qty++;
+          byId("qvQty").textContent = qv.qty;
+        };
+        byId("qvMinus").onclick = () => {
+          qv.qty = Math.max(1, qv.qty - 1);
+          byId("qvQty").textContent = qv.qty;
+        };
+        byId("qvAdd").onclick = () => {
+          addToCart(id, qv.size, qv.color, qv.qty);
+          toggleQuickView(false);
+        };
+        toggleQuickView(true);
+      }
+      function toggleQuickView(show) {
+        byId("quickView").classList.toggle("hidden", !show);
+      }
+
+      /*** Cart ***/
+      function addToCart(id, size = null, color = null, qty = 1) {
+        const p = products.find((x) => x.id === id);
+        if (!p) return;
+        size = size || p.sizes[0];
+        color = color || p.colors[0];
+        const key = `${id}_${size}_${color}`;
+        const exist = state.cart.find((x) => x.key === key);
+        if (exist) exist.qty += qty;
+        else
+          state.cart.push({
+            key,
+            id,
+            name: p.name,
+            price: p.price,
+            size,
+            color,
+            qty,
+            image: p.image,
+          });
+        saveCart();
+        updateCartUI();
+        bounceCart();
+      }
+
+      function removeFromCart(key) {
+        const idx = state.cart.findIndex((x) => x.key === key);
+        if (idx > -1) state.cart.splice(idx, 1);
+        saveCart();
+        updateCartUI();
+      }
+
+      function setQty(key, delta) {
+        const item = state.cart.find((x) => x.key === key);
+        if (!item) return;
+        item.qty = Math.max(1, item.qty + delta);
+        saveCart();
+        updateCartUI();
+      }
+
+      function calcTotals() {
+        const subtotal = state.cart.reduce((s, i) => s + i.price * i.qty, 0);
+        // Shipping
+        let shipping = state.shipping === "YES" ? 29000 : 19000; // flat contoh
+        if (subtotal >= 500000) shipping = 0; // free threshold
+        // Coupon
+        let discount = 0;
+        if (state.coupon === "HEMAT10") discount = Math.round(subtotal * 0.1);
+        if (state.coupon === "GRATISONGKIR") shipping = 0;
+        const total = Math.max(0, subtotal - discount) + shipping;
+        return { subtotal, discount, shipping, total };
+      }
+
+      function updateCartUI() {
+        byId("cartCount").textContent = state.cart.reduce(
+          (s, i) => s + i.qty,
+          0
+        );
+        const wrap = byId("cartItems");
+        wrap.innerHTML =
+          state.cart
+            .map(
+              (item) => `
+        <div class="flex gap-3 py-3">
+          <img src="${item.image}" class="w-16 h-20 object-cover rounded-lg"/>
+          <div class="flex-1">
+            <div class="flex justify-between">
+              <div>
+                <p class="font-semibold">${item.name}</p>
+                <p class="text-xs text-slate-500">${item.color} / ${
+                item.size
+              }</p>
+              </div>
+              <button class="text-slate-400 hover:text-red-500" onclick="removeFromCart('${
+                item.key
+              }')">Hapus</button>
+            </div>
+            <div class="flex items-center justify-between mt-2">
+              <p class="font-semibold">${fIDR(item.price)}</p>
+              <div class="flex items-center gap-2">
+                <button class="rounded border px-2" onclick="setQty('${
+                  item.key
+                }', -1)">-</button>
+                <span class="w-6 text-center">${item.qty}</span>
+                <button class="rounded border px-2" onclick="setQty('${
+                  item.key
+                }', 1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+            )
+            .join("") ||
+          `<div class="text-center text-slate-500 py-10">Keranjang kosong.</div>`;
+
+        const t = calcTotals();
+        byId("subtotalText").textContent = fIDR(t.subtotal);
+        byId("discountText").textContent = t.discount
+          ? `- ${fIDR(t.discount)}`
+          : "-";
+        byId("shippingText").textContent = t.shipping
+          ? fIDR(t.shipping)
+          : "Gratis";
+        byId("totalText").textContent = fIDR(t.total);
+
+        // Update checkout summary too
+        byId("coSubtotal").textContent = fIDR(t.subtotal);
+        byId("coDiscount").textContent = t.discount
+          ? `- ${fIDR(t.discount)}`
+          : "-";
+        byId("coShipping").textContent = t.shipping
+          ? fIDR(t.shipping)
+          : "Gratis";
+        byId("coTotal").textContent = fIDR(t.total);
+      }
+
+      function bounceCart() {
+        const el = byId("cartButton");
+        el.classList.add("scale-95");
+        setTimeout(() => el.classList.remove("scale-95"), 150);
+      }
+
+      function applyCoupon() {
+        const code = byId("couponInput").value.trim().toUpperCase();
+        const valid = ["HEMAT10", "GRATISONGKIR"];
+        if (valid.includes(code)) {
+          state.coupon = code;
+          saveCart();
+          recalc();
+          alert("Kupon diterapkan!");
+        } else {
+          alert("Kupon tidak valid");
+        }
+      }
+
+      function recalc() {
+        state.shipping = byId("shippingSelect").value;
+        updateCartUI();
+      }
+
+      function toggleCart(show) {
+        byId("cartDrawer").classList.toggle("hidden", !show);
+        if (show) updateCartUI();
+      }
+
+      function openCheckout() {
+        toggleCheckout(true);
+      }
+      function toggleCheckout(show) {
+        byId("checkoutModal").classList.toggle("hidden", !show);
+      }
+
+      function scrollToProducts() {
+        document
+          .getElementById("productGrid")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      /*** WhatsApp helpers ***/
+      function toWAUrl(text) {
+        // ganti nomor WA dummy ini dengan punyamu: 62xxxxxxxxxx
+        const phone = "6281234567890";
+        return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+      }
+
+      function buildWAMessage() {
+        const t = calcTotals();
+        const lines = [];
+        lines.push("Halo, saya ingin memesan ICETRONAUT Apparel:");
+        lines.push("");
+        lines.push("🧺 Keranjang:");
+        state.cart.forEach((i, idx) => {
+          lines.push(
+            `${idx + 1}. ${i.name} — ${i.color}/${i.size} x${i.qty} (${fIDR(
+              i.price
+            )})`
+          );
+        });
+        lines.push("");
+        lines.push(`Subtotal: ${fIDR(t.subtotal)}`);
+        lines.push(`Diskon: ${t.discount ? fIDR(t.discount) : "-"}`);
+        lines.push(
+          `Ongkir (${state.shipping}): ${
+            t.shipping ? fIDR(t.shipping) : "Gratis"
+          }`
+        );
+        lines.push(`TOTAL: ${fIDR(t.total)}`);
+        lines.push("");
+        lines.push("📦 Data Penerima:");
+        lines.push(`Nama: ${byId("coName").value}`);
+        lines.push(`HP/WA: ${byId("coPhone").value}`);
+        lines.push(`Alamat: ${byId("coAddress").value}`);
+        lines.push(byId("coPayment").value);
+        lines.push("");
+        lines.push("Mohon konfirmasi ketersediaan & total.");
+        return lines.join("\n");
+      }
+
+      /*** Event Listeners ***/
+      window.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        renderFilters();
+        renderProducts();
+
+        // Search (desktop & mobile)
+        const syncSearch = (val) => {
+          state.search = val;
+          renderProducts();
+        };
+        byId("searchInput").addEventListener("input", (e) => {
+          syncSearch(e.target.value);
+          byId("searchInputMobile").value = e.target.value;
+        });
+        byId("searchInputMobile").addEventListener("input", (e) => {
+          syncSearch(e.target.value);
+          byId("searchInput").value = e.target.value;
+        });
+
+        // Sort (desktop & mobile)
+        const syncSort = (val) => {
+          state.sort = val;
+          renderProducts();
+        };
+        byId("sortSelect").addEventListener("change", (e) => {
+          syncSort(e.target.value);
+          byId("sortSelectMobile").value = e.target.value;
+        });
+        byId("sortSelectMobile").addEventListener("change", (e) => {
+          syncSort(e.target.value);
+          byId("sortSelect").value = e.target.value;
+        });
+
+        // Price range
+        const priceRange = byId("priceRange");
+        const minText = byId("priceMinText");
+        const maxText = byId("priceMaxText");
+        minText.textContent = fIDR(+priceRange.min);
+        const updateMax = () => {
+          state.priceMax = +priceRange.value;
+          maxText.textContent = fIDR(state.priceMax);
+          renderProducts();
+        };
+        priceRange.addEventListener("input", updateMax);
+        updateMax();
+
+        // Category checkboxes
+        document
+          .querySelectorAll("#categoryFilters input[type=checkbox]")
+          .forEach((chk) => {
+            chk.addEventListener("change", (e) => {
+              const val = e.target.dataset.value;
+              if (e.target.checked) state.categories.add(val);
+              else state.categories.delete(val);
+              renderProducts();
+            });
+          });
+
+        // Size & color chips
+        const onChip = (wrapSel, set) => {
+          document.querySelectorAll(wrapSel + " button").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const val = btn.dataset.value;
+              if (set.has(val)) set.delete(val);
+              else set.add(val);
+              btn.classList.toggle("bg-slate-900");
+              btn.classList.toggle("text-white");
+              renderProducts();
+            });
+          });
+        };
+        onChip("#sizeFilters", state.sizes);
+        onChip("#colorFilters", state.colors);
+
+        // Reset
+        byId("resetFilters").addEventListener("click", () => {
+          state.categories.clear();
+          state.sizes.clear();
+          state.colors.clear();
+          state.priceMax = 750000;
+          state.search = "";
+          // UI reset
+          document
+            .querySelectorAll("#categoryFilters input[type=checkbox]")
+            .forEach((c) => {
+              c.checked = false;
+            });
+          document
+            .querySelectorAll("#sizeFilters button, #colorFilters button")
+            .forEach((b) => {
+              b.classList.remove("bg-slate-900", "text-white");
+            });
+          byId("priceRange").value = 750000;
+          byId("searchInput").value = "";
+          byId("searchInputMobile").value = "";
+          renderProducts();
+        });
+
+        // Drawer toggle
+        byId("cartButton").addEventListener("click", () => toggleCart(true));
+        byId("filterToggle").addEventListener("click", () =>
+          byId("filters").classList.toggle("hidden")
+        );
+
+        // Restore coupon if exists
+        try {
+          state.coupon =
+            JSON.parse(localStorage.getItem("cart_v1"))?.coupon || null;
+        } catch {}
+        updateCartUI();
+
+        // Checkout submit -> WhatsApp
+        byId("checkoutForm").addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!state.cart.length) {
+            alert("Keranjang masih kosong.");
+            return;
+          }
+          if (
+            !byId("coName").value ||
+            !byId("coPhone").value ||
+            !byId("coAddress").value
+          ) {
+            alert("Lengkapi data penerima terlebih dahulu.");
+            return;
+          }
+          const waText = buildWAMessage();
+          const url = toWAUrl(waText);
+          window.open(url, "_blank");
+
+          // OPTIONAL: bersihkan cart setelah open WA
+          // state.cart = [];
+          // saveCart();
+          // updateCartUI();
+          // toggleCheckout(false);
+          // toggleCart(false);
+        });
+
+        // Shipping select initial
+        byId("shippingSelect").value = state.shipping;
+      });
+    </script>
+  </body>
+</html>
